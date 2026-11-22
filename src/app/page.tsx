@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
+import { MOCK_PRODUCTS } from '@/lib/products/mock-catalog';
 import { formatCurrency } from '@/lib/utils';
 import { ArrowRight, ShieldCheck, Zap, Lock, ShoppingBag } from 'lucide-react';
 
@@ -41,6 +42,15 @@ export default async function HomePage() {
     featuredProducts = fetchedProducts;
   } catch {
     // Graceful fallback when database container is not yet initialized
+  }
+
+  if (featuredProducts.length === 0) {
+    featuredProducts = MOCK_PRODUCTS.slice(0, 8).map((p) => ({
+      id: p.id,
+      title: p.title,
+      vendor: p.vendor,
+      variants: [{ priceCents: p.variants[0].priceCents }],
+    }));
   }
 
   const heroSection = sections.find((s) => s.sectionType === 'Hero');

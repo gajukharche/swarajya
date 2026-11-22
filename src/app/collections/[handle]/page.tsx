@@ -4,6 +4,7 @@ import { StorefrontHeader } from '@/components/storefront/header';
 import { FacetFilters } from '@/components/storefront/facet-filters';
 import { ProductCard } from '@/components/storefront/product-card';
 import { notFound } from 'next/navigation';
+import { MOCK_PRODUCTS } from '@/lib/products/mock-catalog';
 import { Prisma } from '@prisma/client';
 
 export const dynamic = 'force-dynamic';
@@ -95,6 +96,40 @@ export default async function CollectionPage({
           : { createdAt: 'desc' },
     });
   } catch {}
+
+  // Fallback to rich mock catalog when database has no records yet
+  if (products.length === 0) {
+    let list = [...MOCK_PRODUCTS];
+
+    if (query.inStock === 'true') {
+      list = list.filter((p) => p.variants.some((v) => v.inventoryQuantity > 0));
+    }
+    if (query.minPrice) {
+      const minCents = Math.round(parseFloat(query.minPrice) * 100);
+      list = list.filter((p) => p.variants.some((v) => v.priceCents >= minCents));
+    }
+    if (query.maxPrice) {
+      const maxCents = Math.round(parseFloat(query.maxPrice) * 100);
+      list = list.filter((p) => p.variants.some((v) => v.priceCents <= maxCents));
+    }
+    if (query.sort === 'price_asc') {
+      list.sort((a, b) => a.variants[0].priceCents - b.variants[0].priceCents);
+    } else if (query.sort === 'price_desc') {
+      list.sort((a, b) => b.variants[0].priceCents - a.variants[0].priceCents);
+    }
+
+    products = list.map((p) => ({
+      id: p.id,
+      title: p.title,
+      handle: p.handle,
+      vendor: p.vendor,
+      variants: p.variants.map((v) => ({
+        priceCents: v.priceCents,
+        inventoryQuantity: v.inventoryQuantity,
+      })),
+      media: p.media.map((m) => ({ url: m.url })),
+    }));
+  }
 
   const title = isAll ? 'All Catalog Products' : collection?.title || handle;
 

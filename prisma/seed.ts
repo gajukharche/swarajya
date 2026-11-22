@@ -1,5 +1,6 @@
 import { PrismaClient, Role, ProductStatus } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import { MOCK_PRODUCTS } from '../src/lib/products/mock-catalog';
 
 const prisma = new PrismaClient();
 
@@ -84,77 +85,66 @@ async function main() {
     console.log('Seeded initial PageSections for homepage.');
   }
 
-  // 4. Seed Demo Product
-  const sampleProductHandle = 'apex-waterproof-jacket';
-  const existingProduct = await prisma.product.findUnique({
-    where: { handle: sampleProductHandle },
-  });
+  // 4. Seed Comprehensive 25-Product Catalog
+  console.log(`Seeding ${MOCK_PRODUCTS.length} catalog products...`);
 
-  if (!existingProduct) {
-    const product = await prisma.product.create({
-      data: {
-        title: 'Apex Waterproof Technical Shell',
-        handle: sampleProductHandle,
-        description: 'Engineered with 3-layer breathable Japanese ripstop, YKK Aquaguard zippers, and laser-cut venting.',
-        vendor: 'Apex Outerwear',
-        productType: 'Apparel',
-        status: ProductStatus.ACTIVE,
-        tags: ['outerwear', 'technical', 'waterproof', 'new-arrival'],
-        seoTitle: 'Apex Waterproof Technical Shell | High Performance Outerwear',
-        seoDescription: 'Shop the Apex Waterproof Technical Shell. Built for extreme conditions with sub-second comfort.',
-        options: {
-          create: [
-            {
-              name: 'Size',
-              position: 0,
-              values: {
-                create: [
-                  { value: 'M', position: 0 },
-                  { value: 'L', position: 1 },
-                ],
-              },
-            },
-            {
-              name: 'Color',
-              position: 1,
-              values: {
-                create: [
-                  { value: 'Obsidian Black', position: 0 },
-                  { value: 'Arctic Slate', position: 1 },
-                ],
-              },
-            },
-          ],
-        },
-      },
+  for (const item of MOCK_PRODUCTS) {
+    const existing = await prisma.product.findUnique({
+      where: { handle: item.handle },
     });
 
-    // Create Cartesian variants (2 sizes x 2 colors = 4 variants)
-    const variants = [
-      { title: 'M / Obsidian Black', sku: 'APX-SHL-BLK-M', priceCents: 24900, inventoryQuantity: 25 },
-      { title: 'L / Obsidian Black', sku: 'APX-SHL-BLK-L', priceCents: 24900, inventoryQuantity: 18 },
-      { title: 'M / Arctic Slate', sku: 'APX-SHL-SLT-M', priceCents: 24900, inventoryQuantity: 12 },
-      { title: 'L / Arctic Slate', sku: 'APX-SHL-SLT-L', priceCents: 24900, inventoryQuantity: 15 },
-    ];
-
-    for (const v of variants) {
-      await prisma.productVariant.create({
+    if (!existing) {
+      const created = await prisma.product.create({
         data: {
-          productId: product.id,
-          title: v.title,
-          sku: v.sku,
-          priceCents: v.priceCents,
-          compareAtPriceCents: 29900,
-          costPerItemCents: 9500,
-          inventoryQuantity: v.inventoryQuantity,
+          id: item.id,
+          title: item.title,
+          handle: item.handle,
+          description: item.description,
+          vendor: item.vendor,
+          productType: item.productType,
+          status: ProductStatus.ACTIVE,
+          tags: item.tags,
+          seoTitle: `${item.title} | Swarajya`,
+          seoDescription: item.description.slice(0, 150),
+          options: {
+            create: item.options.map((opt) => ({
+              name: opt.name,
+              position: opt.position,
+              values: {
+                create: opt.values.map((v) => ({
+                  value: v.value,
+                  position: v.position,
+                })),
+              },
+            })),
+          },
+          media: {
+            create: item.media.map((m) => ({
+              url: m.url,
+              altText: m.altText,
+              position: m.position,
+            })),
+          },
         },
       });
-    }
 
-    console.log(`Seeded demo product: ${sampleProductHandle} with 4 variants.`);
+      for (const v of item.variants) {
+        await prisma.productVariant.create({
+          data: {
+            productId: created.id,
+            title: v.title,
+            sku: v.sku,
+            priceCents: v.priceCents,
+            compareAtPriceCents: v.compareAtPriceCents,
+            inventoryQuantity: v.inventoryQuantity,
+            reservedQuantity: 0,
+          },
+        });
+      }
+    }
   }
 
-  console.log('Seeding complete.');
+  console.log('Seeding complete with all 25 products.');
 }
 
 main()

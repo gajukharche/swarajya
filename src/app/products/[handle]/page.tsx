@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { StorefrontHeader } from '@/components/storefront/header';
 import { PdpClient } from '@/components/storefront/pdp-client';
 import { PdpJsonLd } from '@/components/storefront/pdp-json-ld';
+import { MOCK_PRODUCTS } from '@/lib/products/mock-catalog';
 import { notFound } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
@@ -33,6 +34,13 @@ export default async function ProductDetailPage({
     });
   } catch {
     // Database connection fallback during build
+  }
+
+  if (!product) {
+    const mock = MOCK_PRODUCTS.find((p) => p.handle === handle);
+    if (mock) {
+      product = mock;
+    }
   }
 
   if (!product) {

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import { formatCurrency } from '@/lib/utils';
+import { MOCK_PRODUCTS } from '@/lib/products/mock-catalog';
 import { Plus, Download, Upload, Package, Edit, Trash2 } from 'lucide-react';
 import { deleteProductAction } from './actions';
 
@@ -31,6 +32,23 @@ export default async function AdminProductsPage() {
     });
   } catch {
     // Database connection fallback during build
+  }
+
+  if (products.length === 0) {
+    products = MOCK_PRODUCTS.map((p) => ({
+      id: p.id,
+      title: p.title,
+      handle: p.handle,
+      status: p.status,
+      vendor: p.vendor,
+      tags: p.tags,
+      variants: p.variants.map((v) => ({
+        id: v.id,
+        priceCents: v.priceCents,
+        inventoryQuantity: v.inventoryQuantity,
+        reservedQuantity: v.reservedQuantity,
+      })),
+    }));
   }
 
   return (
