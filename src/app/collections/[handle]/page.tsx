@@ -157,7 +157,7 @@ export default async function CollectionPage({
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Facets Sidebar */}
           <aside className="md:col-span-1">
-            <div className="bg-zinc-900/60 border border-zinc-800 rounded-xl p-5 sticky top-24">
+            <div className="sticky top-24">
               <FacetFilters />
             </div>
           </aside>

@@ -107,6 +107,68 @@ export default async function CustomerOrderDetailPage({ params }: CustomerOrderD
           </div>
         </div>
 
+        {/* 4-Stage Visual Fulfillment Stepper */}
+        <div className="my-6 p-6 rounded-2xl glass-panel border border-zinc-800">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-6">
+            Delivery Lifecycle
+          </h3>
+          <div className="grid grid-cols-4 gap-2 relative">
+            {/* Step 1: Placed */}
+            <div className="flex flex-col items-center text-center">
+              <div className="w-8 h-8 rounded-full bg-emerald-500/20 border-2 border-emerald-500 flex items-center justify-center text-emerald-400 text-xs font-bold mb-2">
+                ✓
+              </div>
+              <span className="text-xs font-semibold text-white">Placed</span>
+              <span className="text-[10px] text-zinc-500 hidden sm:inline">Order Confirmed</span>
+            </div>
+
+            {/* Step 2: Payment */}
+            <div className="flex flex-col items-center text-center">
+              <div className="w-8 h-8 rounded-full bg-emerald-500/20 border-2 border-emerald-500 flex items-center justify-center text-emerald-400 text-xs font-bold mb-2">
+                ✓
+              </div>
+              <span className="text-xs font-semibold text-white">Payment</span>
+              <span className="text-[10px] text-zinc-500 hidden sm:inline">256-bit Stripe</span>
+            </div>
+
+            {/* Step 3: Dispatched */}
+            <div className="flex flex-col items-center text-center">
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold mb-2 border-2 ${
+                  fulfillment
+                    ? 'bg-blue-500/20 border-blue-500 text-blue-400'
+                    : 'bg-zinc-800 border-zinc-700 text-zinc-500'
+                }`}
+              >
+                {fulfillment ? '✓' : '3'}
+              </div>
+              <span className={`text-xs font-semibold ${fulfillment ? 'text-white' : 'text-zinc-500'}`}>
+                Dispatched
+              </span>
+              <span className="text-[10px] text-zinc-500 hidden sm:inline">
+                {fulfillment?.carrier || 'Packaging'}
+              </span>
+            </div>
+
+            {/* Step 4: Delivered */}
+            <div className="flex flex-col items-center text-center">
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold mb-2 border-2 ${
+                  order.status === 'FULFILLED'
+                    ? 'bg-emerald-500/20 border-emerald-500 text-emerald-400'
+                    : 'bg-zinc-800 border-zinc-700 text-zinc-500'
+                }`}
+              >
+                {order.status === 'FULFILLED' ? '✓' : '4'}
+              </div>
+              <span className={`text-xs font-semibold ${order.status === 'FULFILLED' ? 'text-white' : 'text-zinc-500'}`}>
+                Delivered
+              </span>
+              <span className="text-[10px] text-zinc-500 hidden sm:inline">Final Destination</span>
+            </div>
+          </div>
+        </div>
+
         {/* Tracking Banner if fulfilled */}
         {fulfillment && (
           <div className="my-6 p-5 rounded-2xl bg-indigo-950/30 border border-indigo-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
