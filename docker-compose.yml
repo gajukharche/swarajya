@@ -1,0 +1,39 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: shopify_ecommerce_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: shopify_ecommerce
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.12
+    container_name: shopify_ecommerce_meilisearch
+    restart: unless-stopped
+    environment:
+      MEILI_MASTER_KEY: meilimasterkey1234567890
+      MEILI_ENV: development
+    ports:
+      - "7700:7700"
+    volumes:
+      - meilisearch_data:/meili_data
+
+  redis:
+    image: redis:7.4-alpine
+    container_name: shopify_ecommerce_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  postgres_data:
+  meilisearch_data:
+  redis_data:
