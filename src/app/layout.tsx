@@ -5,8 +5,8 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Apex E-Commerce | High Performance Storefront',
-  description: 'Self-hosted, sub-second single merchant e-commerce platform built on Next.js 16.',
+  title: 'Swarajya | Sovereign High-Performance Commerce',
+  description: 'Self-hosted, sub-100ms sovereign commerce platform built on Next.js 16.',
 };
 
 export default function RootLayout({

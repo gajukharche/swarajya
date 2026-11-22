@@ -38,10 +38,10 @@ export default async function AdminLayout({
         <div>
           <div className="h-16 flex items-center px-6 border-b border-zinc-800">
             <span className="text-lg font-bold tracking-tight text-white flex items-center gap-2">
-              <span className="w-6 h-6 rounded bg-indigo-600 flex items-center justify-center text-xs">
-                A
+              <span className="w-6 h-6 rounded bg-indigo-600 flex items-center justify-center text-xs font-bold">
+                S
               </span>
-              Apex Admin
+              Swarajya Admin
             </span>
           </div>
 

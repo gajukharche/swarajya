@@ -14,9 +14,9 @@ export default function CustomerLoginPage() {
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
         <Link href="/" className="inline-flex items-center gap-2 mb-6">
           <span className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-sm font-black text-white shadow-lg shadow-indigo-600/30">
-            A
+            S
           </span>
-          <span className="text-xl font-bold tracking-tight">Apex Store</span>
+          <span className="text-xl font-bold tracking-tight">Swarajya</span>
         </Link>
         <h2 className="text-2xl font-bold tracking-tight">
           {mode === 'login' ? 'Sign in to your account' : 'Create customer account'}

@@ -22,10 +22,10 @@ export function StorefrontHeader({ collections = [] }: StorefrontHeaderProps) {
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="font-bold text-xl tracking-tight flex items-center gap-2">
-            <span className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-xs font-black text-white">
-              A
+            <span className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-xs font-black text-white shadow-md shadow-indigo-600/30">
+              S
             </span>
-            <span className="text-white">Apex Store</span>
+            <span className="text-white">Swarajya</span>
           </Link>
 
           {/* Navigation Links */}
