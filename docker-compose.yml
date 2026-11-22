@@ -33,6 +33,29 @@ services:
     volumes:
       - redis_data:/data
 
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: shopify_ecommerce_web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgrespassword@postgres:5432/shopify_ecommerce?schema=public
+      - REDIS_URL=redis://redis:6379
+      - MEILISEARCH_HOST=http://meilisearch:7700
+      - MEILISEARCH_MASTER_KEY=meilimasterkey1234567890
+      - AUTH_SECRET=production_grade_jwt_secret_key_32_characters_minimum_random
+      - NEXT_PUBLIC_STORE_NAME=Swarajya
+      - NEXT_PUBLIC_STORE_URL=http://localhost:3000
+      - PORT=3000
+      - HOSTNAME=0.0.0.0
+    depends_on:
+      - postgres
+      - redis
+      - meilisearch
+
 volumes:
   postgres_data:
   meilisearch_data:
